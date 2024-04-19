@@ -13,9 +13,19 @@ interface SidebarItemProp {
 }
 const SidebarItem = ({ id, icon: Icon, label, href }: SidebarItemProp) => {
   const pathName = usePathname();
-  const router = useRouter();
+  const router = useRouter(); 
 
-  const isActive = pathName.includes(href);
+  const normalizedPathName = `/${pathName}`.replace('//', '/') 
+  const normalizedHref = `/${href}`
+
+  const pathSegments = pathName.split('/').filter(Boolean)
+  const hrefSegments = normalizedHref.split('/').filter(Boolean)
+
+
+  const isActiveBase = normalizedPathName.startsWith(normalizedHref)
+
+  const isExactOrParent = isActiveBase && pathSegments.length <= hrefSegments.length
+  const isActive = isActiveBase && isExactOrParent
   return (
     <div>
       <button
